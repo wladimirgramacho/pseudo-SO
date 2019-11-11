@@ -21,6 +21,7 @@ class ProcessManager
         executions: 0
       }
     end
+    @processes.sort! { |a, b| a[:init_time] <=> b[:init_time] }
   end
 
   private
