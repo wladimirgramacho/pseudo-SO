@@ -27,7 +27,15 @@ class ProcessManager
   end
 
   def execute(instructions, memory)
+    log = Logger.new
+
     instructions.each do |instruction|
+      process = @processes[instruction[:pid]]
+      if process[:executions] == 0
+        log.dispatcher(process)
+      end
+      process[:executions] += 1
+
       if instruction[:code] == 0
         empty_space = memory.join.index('0' * instruction[:num_write_blocks])
         if empty_space.nil?
@@ -46,8 +54,8 @@ class ProcessManager
         memory = memory.map { |m| m == instruction[:filename] ? '0' : m }
       end
     end
+
     memory
-    # log.dispatcher(process)
   end
 
   private
