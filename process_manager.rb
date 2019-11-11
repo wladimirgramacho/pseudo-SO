@@ -5,8 +5,8 @@ class ProcessManager
     processes_file = File.open('processes.txt')
     lines = processes_file.readlines.map(&:chomp)
     @processes = []
-    lines.each do |line|
-      line = line.split(',')
+    lines.each_with_index do |line, index|
+      line = line.split(',').map(&:to_i)
       @processes << {
         init_time: line[0],
         priority: line[1],
@@ -16,10 +16,16 @@ class ProcessManager
         scanner_req: line[5],
         modem_req: line[6],
         disk_number: line[7],
-        offset: 0,
-        pid: 0,
+        offset: find_offset(index),
+        pid: index,
         executions: 0
       }
     end
+  end
+
+  private
+
+  def find_offset(index)
+    index > 0 ? @processes.last[:offset] + @processes.last[:memory_blocks] + 1 : 0
   end
 end
