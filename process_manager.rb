@@ -1,3 +1,5 @@
+require_relative 'logger'
+
 class ProcessManager
   attr_accessor :processes
 
@@ -22,6 +24,24 @@ class ProcessManager
       }
     end
     @processes.sort! { |a, b| a[:init_time] <=> b[:init_time] }
+  end
+
+  def execute(instructions, memory)
+    instructions.each do |instruction|
+      if instruction[:code] == 0
+        empty_space = memory.join.index('0' * instruction[:num_write_blocks])
+        if empty_space.nil?
+          puts "Não tem espaço para colocar o #{instruction[:filename]}"
+          next
+        end
+        (empty_space...(empty_space + instruction[:num_write_blocks])).each do |index|
+          memory[index] = instruction[:filename]
+        end
+      else
+
+      end
+    end
+    # log.dispatcher(process)
   end
 
   private

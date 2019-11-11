@@ -7,9 +7,8 @@ def main
   memory_manager = MemoryManager.new
   log = Logger.new
 
-  process_manager.processes.each do |process|
-    log.dispatcher(process)
-  end
+  process_manager.execute(memory_manager.instructions, memory_manager.memory)
+  log.memory(memory_manager.memory)
 end
 
 main

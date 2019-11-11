@@ -11,4 +11,11 @@ class Logger
     puts "\t modems:\t\t #{process[:modem]}"
     puts "\t drivers:\t\t 0"
   end
+
+  def memory(memory)
+    puts 'Mapa de ocupação do disco'
+    print '|'
+    memory.each { |m| print "#{m == 0 ? ' ' : m}|" }
+    puts
+  end
 end
