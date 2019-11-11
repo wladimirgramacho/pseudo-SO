@@ -38,9 +38,15 @@ class ProcessManager
           memory[index] = instruction[:filename]
         end
       else
-
+        index = memory.index(instruction[:filename])
+        if index.nil?
+          puts "O arquivo #{instruction[:filename]} não está em memória"
+          next
+        end
+        memory = memory.map { |m| m == instruction[:filename] ? '0' : m }
       end
     end
+    memory
     # log.dispatcher(process)
   end
 

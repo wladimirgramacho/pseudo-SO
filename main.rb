@@ -7,8 +7,8 @@ def main
   memory_manager = MemoryManager.new
   log = Logger.new
 
-  process_manager.execute(memory_manager.instructions, memory_manager.memory)
-  log.memory(memory_manager.memory)
+  memory = process_manager.execute(memory_manager.instructions, memory_manager.memory)
+  log.memory(memory)
 end
 
 main

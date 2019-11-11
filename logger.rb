@@ -15,7 +15,7 @@ class Logger
   def memory(memory)
     puts 'Mapa de ocupação do disco'
     print '|'
-    memory.each { |m| print "#{m == 0 ? ' ' : m}|" }
+    memory.each { |m| print "#{m == '0' ? ' ' : m}|" }
     puts
   end
 end

@@ -6,7 +6,7 @@ class MemoryManager
   def initialize
     memory_file = File.open('files.txt')
     lines = memory_file.readlines.map(&:chomp)
-    @memory = Array.new(lines[0].to_i, 0)
+    @memory = Array.new(lines[0].to_i, '0')
     segments_in_memory = lines[1].to_i
     lines[2..(segments_in_memory + 1)].each do |segment|
       segment = segment.split(',')
