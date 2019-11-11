@@ -1,7 +1,7 @@
 require 'byebug'
 
 class MemoryManager
-  attr_accessor :memory
+  attr_accessor :memory, :instructions
 
   def initialize
     memory_file = File.open('files.txt')
@@ -14,6 +14,17 @@ class MemoryManager
       (start...(segment[2].to_i + start)).each_with_index do |index, _|
         @memory[index] = segment[0]
       end
+    end
+    @instructions = []
+    lines[(segments_in_memory + 2)..].each do |instruction|
+      instruction = instruction.split(',').map(&:to_i)
+      @instructions << {
+        pid: instruction[0],
+        code: instruction[1],
+        filename: instruction[2],
+        num_write_blocks: instruction[1] == 0 ? instruction[3] : nil,
+        op_number: instruction.last
+      }
     end
   end
 end
