@@ -29,40 +29,41 @@ class ProcessManager
   def execute(instructions, memory)
     log = Logger.new
 
-    instructions.each do |instruction|
-      process = @processes[instruction[:pid]]
-      if process[:executions] == 0
-        log.dispatcher(process)
-        puts "process #{process[:pid]} =>"
-        puts "P#{process[:pid]} STARTED"
-      end
-      process[:executions] += 1
+    @processes.map { |p| p[:instructions] = instructions.select { |i| i[:pid] == p[:pid] } }
 
-      if instruction[:code] == 0
-        empty_space = memory.join.index('0' * instruction[:num_write_blocks])
-        if empty_space.nil?
-          puts "\tP#{process[:pid]} instruction #{instruction[:op_number]} - FALHA"
-          puts "\tNão tem espaço para colocar o arquivo #{instruction[:filename]}"
-          next
-        end
-        blocks = (empty_space...(empty_space + instruction[:num_write_blocks])).to_a
-        blocks.each do |index|
-          memory[index] = instruction[:filename]
-        end
+    @processes.each do |process|
+      log.dispatcher(process)
+      puts "process #{process[:pid]} =>"
+      puts "\tP#{process[:pid]} STARTED"
 
-        puts "\tP#{process[:pid]} instruction #{instruction[:op_number]} - SUCESSO"
-        puts "\tO processo #{process[:pid]} criou o arquivo #{instruction[:filename]} (blocos #{blocks})"
-      else
-        index = memory.index(instruction[:filename])
-        if index.nil?
-          puts "\tP#{process[:pid]} instruction #{instruction[:op_number]} - FALHA"
-          puts "\tO arquivo #{instruction[:filename]} não está em memória"
-          next
+      process[:instructions].each do |instruction|
+        if instruction[:code] == 0
+          empty_space = memory.join.index('0' * instruction[:num_write_blocks])
+          if empty_space.nil?
+            puts "\tP#{process[:pid]} instruction #{instruction[:op_number]} - FALHA"
+            puts "\tNão tem espaço para colocar o arquivo #{instruction[:filename]}"
+            next
+          end
+          blocks = (empty_space...(empty_space + instruction[:num_write_blocks])).to_a
+          blocks.each do |index|
+            memory[index] = instruction[:filename]
+          end
+
+          puts "\tP#{process[:pid]} instruction #{instruction[:op_number]} - SUCESSO"
+          puts "\tO processo #{process[:pid]} criou o arquivo #{instruction[:filename]} (blocos #{blocks})"
+        else
+          index = memory.index(instruction[:filename])
+          if index.nil?
+            puts "\tP#{process[:pid]} instruction #{instruction[:op_number]} - FALHA"
+            puts "\tO arquivo #{instruction[:filename]} não está em memória"
+            next
+          end
+          memory = memory.map { |m| m == instruction[:filename] ? '0' : m }
         end
-        memory = memory.map { |m| m == instruction[:filename] ? '0' : m }
       end
+
+      puts "\tP#{process[:pid]} SIGINT"
     end
-
     memory
   end
 
